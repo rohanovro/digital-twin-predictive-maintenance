@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&pause=1000&color=2EC4B6&center=true&vCenter=true&width=800&lines=AI-Driven+Digital+Twin;Predictive+Maintenance+%7C+Smart+Manufacturing;Industry+4.0+%7C+IEEE+Research+Project" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&pause=1000&color=2EC4B6&center=true&vCenter=true&width=800&lines=AI-Driven+Digital+Twin;Predictive+Maintenance+%7C+Smart+Manufacturing;Industry+4.0+%7C alt="Typing SVG" />
 
 <br/>
 
@@ -15,8 +15,7 @@
 
 > ### *"AI-Enhanced Digital Twin Framework for Predictive Maintenance of Industrial Machinery Using Sensor Fusion"*
 > MAHMUDUL HASAN ROHAN / JASHORE UNIVERSITY OF SCIENCE AND TECHNOLOGY
-> **Dataset:** AI4I 2020 Predictive Maintenance (UCI) &nbsp;|&nbsp; **Target:** IEEE Industrial Electronics / IEOM 2025
-
+> **Dataset:** AI4I 2020 Predictive Maintenance (UCI) &nbsp;|&nbsp; 
 <br/>
 
 | Metric | Result |
@@ -332,25 +331,6 @@ RUL(t) = (1 − P_failure(t)) × (Max_wear − Current_wear(t))
 5. **Four-scenario simulation** — stress-tests the Digital Twin under different failure modes
 6. **Open-source, reproducible** — single command reproduces all results
 
----
-
-
-
-```
-
----
-
-## 📜 License
-
-MIT License — see [LICENSE](LICENSE) for details.
-
----
-
-<div align="center">
-
-
-
-[![GitHub stars](https://img.shields.io/github/stars/rohanovro/digital-twin-predictive-maintenance?style=social)](https://github.com/rohanovro/digital-twin-predictive-maintenance)
 
 *If this project helped you, please ⭐ star the repo!*
 
