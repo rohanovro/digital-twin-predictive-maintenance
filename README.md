@@ -9,12 +9,12 @@
 [![Matplotlib](https://img.shields.io/badge/Matplotlib-3.6%2B-11557C?style=for-the-badge)](https://matplotlib.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-2EC4B6?style=for-the-badge)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Research%20Ready-E76F51?style=for-the-badge)]()
-[![IEEE](https://img.shields.io/badge/IEEE-Publication%20Target-F4A261?style=for-the-badge)](https://ieee.org)
+
 
 <br/>
 
 > ### *"AI-Enhanced Digital Twin Framework for Predictive Maintenance of Industrial Machinery Using Sensor Fusion"*
->
+> MAHMUDUL HASAN ROHAN / JASHORE UNIVERSITY OF SCIENCE AND TECHNOLOGY
 > **Dataset:** AI4I 2020 Predictive Maintenance (UCI) &nbsp;|&nbsp; **Target:** IEEE Industrial Electronics / IEOM 2025
 
 <br/>
@@ -151,7 +151,6 @@ Temp Gradient      █████████              9.9%   ← Novel the
 
 ---
 
-## 📈 Figures
 
 
 ## 📈 Figures
@@ -245,7 +244,7 @@ digital-twin-predictive-maintenance/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Clone & Install
 
@@ -317,14 +316,14 @@ RUL(t) = (1 − P_failure(t)) × (Max_wear − Current_wear(t))
 ### Alert Levels
 | Level | Threshold | Action |
 |-------|----------|--------|
-| ✅ OK | P < 30% | Continue |
+|  OK | P < 30% | Continue |
 | ⚠️ WARNING | 30–60% | Increase monitoring |
 | 🔴 HIGH RISK | 60–80% | Schedule maintenance |
 | 🚨 CRITICAL | > 80% | Immediate shutdown |
 
 ---
 
-## 🏆 Research Contributions
+##  Research Contributions
 
 1. **Dual-layer detection** — supervised RF + unsupervised Isolation Forest
 2. **Physics-informed sensor fusion** — 12 engineered features from 5 raw sensors
@@ -335,17 +334,8 @@ RUL(t) = (1 − P_failure(t)) × (Max_wear − Current_wear(t))
 
 ---
 
-## 📝 Citation
 
-```bibtex
-@article{digitaltwin_pm_2025,
-  title   = {AI-Enhanced Digital Twin Framework for Predictive Maintenance
-             of Industrial Machinery Using Sensor Fusion},
-  author  = {Rohanov, R.},
-  journal = {IEEE Transactions on Industrial Electronics},
-  year    = {2025},
-  url     = {https://github.com/rohanovro/digital-twin-predictive-maintenance}
-}
+
 ```
 
 ---
@@ -358,7 +348,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-**Built for IEEE Publication · Erasmus Mundus Portfolio · Industry 4.0 Research**
+
 
 [![GitHub stars](https://img.shields.io/github/stars/rohanovro/digital-twin-predictive-maintenance?style=social)](https://github.com/rohanovro/digital-twin-predictive-maintenance)
 
