@@ -153,71 +153,53 @@ Temp Gradient      █████████              9.9%   ← Novel the
 
 ## 📈 Figures
 
-All 9 figures — warm teal/coral/gold palette, publication-ready at 150 DPI.
+
+## 📈 Figures
 
 ---
 
-### 01 — Dataset Overview
-> Sensor distributions split by failure/normal · Failure mode pie · Correlation heatmap
-
-![Dataset Overview](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/01_dataset_overview.png)
+### Figure 01 — Dataset Overview
+![Dataset Overview](01_dataset_overview.png)
 
 ---
 
-### 02 — Model Comparison
-> All-model metric bars · ROC curves · 5-Fold CV F1 with error bars
-
-![Model Comparison](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/02_model_comparison.png)
+### Figure 02 — Model Comparison
+![Model Comparison](02_model_comparison.png)
 
 ---
 
-### 03 — Confusion Matrices (All 4 Models)
-> Side-by-side: Random Forest · Gradient Boosting · Logistic Regression · Ensemble
-
-![Confusion Matrices](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/03_confusion_matrices.png)
+### Figure 03 — Confusion Matrices
+![Confusion Matrices](03_confusion_matrices.png)
 
 ---
 
-### 04 — Precision-Recall & ROC Curves
-> All models overlaid · Baseline comparison · Critical for imbalanced datasets
-
-![PR ROC Curves](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/04_pr_roc_curves.png)
+### Figure 04 — Precision-Recall & ROC Curves
+![PR ROC Curves](04_pr_roc_curves.png)
 
 ---
 
-### 05 — Explainable AI — Feature Importance
-> RF + GBT ranked importance bars · Failure driver category donut chart
-
-![XAI Feature Importance](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/05_xai_feature_importance.png)
+### Figure 05 — Explainable AI — Feature Importance
+![XAI Feature Importance](05_xai_feature_importance.png)
 
 ---
 
-### 06 — SMOTE Impact
-> Before vs After SMOTE: Recall +10pp · F1 improvement · Precision trade-off
-
-![SMOTE Impact](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/06_smote_impact.png)
+### Figure 06 — SMOTE Impact
+![SMOTE Impact](06_smote_impact.png)
 
 ---
 
-### 07 — Anomaly Detection
-> Score distribution · Speed-Torque anomaly scatter · Overlap with actual failures
-
-![Anomaly Detection](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/07_anomaly_detection.png)
+### Figure 07 — Anomaly Detection
+![Anomaly Detection](07_anomaly_detection.png)
 
 ---
 
-### 08 — Remaining Useful Life (RUL)
-> Failure probability vs tool wear · RUL estimate curve · Maintenance trigger zone
-
-![RUL Prediction](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/08_rul_prediction.png)
+### Figure 08 — Remaining Useful Life (RUL)
+![RUL Prediction](08_rul_prediction.png)
 
 ---
 
-### 09 — Research Summary Dashboard
-> All KPIs + all key charts in one publication-ready figure
-
-![Research Summary Dashboard](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/09_research_summary_dashboard.png)
-
+### Figure 09 — Research Summary Dashboard
+![Research Summary Dashboard](09_research_summary_dashboard.png)
 ---
 
 ## 📁 Project Structure
