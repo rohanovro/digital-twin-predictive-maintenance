@@ -1,4 +1,4 @@
-s<div align="center">
+<div align="center">
 
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&pause=1000&color=2EC4B6&center=true&vCenter=true&width=800&lines=AI-Driven+Digital+Twin;Predictive+Maintenance+%7C+Smart+Manufacturing;Industry+4.0+%7C+IEEE+Research+Project" alt="Typing SVG" />
 
@@ -49,12 +49,6 @@ s<div align="center">
 ## 🌟 Overview
 
 A **full-stack, research-grade AI Digital Twin** for predictive maintenance of industrial CNC machinery, implementing a novel **dual-layer detection system** that combines supervised machine learning with unsupervised anomaly detection — all wrapped in a live real-time simulation environment.
-
-### Why this matters
-
-> Traditional predictive maintenance uses a **single binary classifier** and raises alerts only on known failure patterns.
-> This framework adds an **unsupervised anomaly layer** that catches *novel* failures the classifier has never seen,
-> then feeds both signals into a **Digital Twin** that estimates Remaining Useful Life in real time.
 
 ### What's implemented
 
@@ -120,16 +114,6 @@ A **full-stack, research-grade AI Digital Twin** for predictive maintenance of i
 | Missing values | 0 |
 | Failure modes | TWF · HDF · PWF · OSF · RNF |
 
-### Sensor Channels
-
-| Sensor | Range | Unit | Primary Failure Link |
-|--------|-------|------|---------------------|
-| Air Temperature | 295–305 | K | Heat Dissipation (HDF) |
-| Process Temperature | 305–313 | K | Heat Dissipation (HDF) |
-| Rotational Speed | 1168–2886 | rpm | Power Failure (PWF) |
-| Torque | 3.8–76.6 | Nm | Overstrain (OSF) |
-| Tool Wear | 0–253 | min | Tool Wear Failure (TWF) |
-
 ### Engineered Features (Sensor Fusion)
 
 ```python
@@ -140,10 +124,6 @@ df["speed_wear"]         = speed * tool_wear                # Fatigue proxy
 df["power_temp"]         = power * temp_diff                # Thermal overload
 df["wear_speed_torque"]  = tool_wear * speed * torque       # High-order fatigue
 ```
-
-**Novel insight:** `temp_diff` (thermal gradient) ranks 6th in importance at 9.9%,
-outperforming both raw temperature sensors individually. This means the *rate* of
-heat dissipation predicts failures better than absolute temperature — a key XAI finding.
 
 ---
 
@@ -158,22 +138,6 @@ heat dissipation predicts failures better than absolute temperature — a key XA
 | Logistic Reg | 86.15% | 17.9% | 85.3% | 0.295 | 0.934 | 0.843 |
 | **Ensemble (RF+GBT)** ⭐ | 99.15% | 91.8% | 82.4% | **0.868** | **0.979** | **0.996** |
 
-### SMOTE Impact
-
-| Model | Recall Before | Recall After | Change |
-|-------|-------------|-------------|--------|
-| Random Forest | 75.0% | 85.3% | **+10.3pp** |
-| Gradient Boost | 79.4% | 79.4% | ≈ stable |
-
-### Confusion Matrix (Random Forest + SMOTE)
-
-```
-                  Predicted
-                  No Fail    Fail
-Actual  No Fail  [  1923       9  ]   Specificity = 99.5%
-        Fail     [    10      58  ]   Sensitivity = 85.3%
-```
-
 ### Feature Importance (Top 6)
 
 ```
@@ -184,15 +148,6 @@ Tool Wear          ████████████          11.4%   ← Wea
 Wear × Torque      ██████████            10.3%   ← Non-linear wear under load
 Temp Gradient      █████████              9.9%   ← Novel thermal finding ★
 ```
-
-### Anomaly Detection (Isolation Forest)
-
-| Metric | Value |
-|--------|-------|
-| Test samples | 2,000 |
-| Anomalies flagged | 52 (3.1%) |
-| Overlap with actual failures | 16 of 68 (24%) |
-| Dual-layer catch rate | Higher than either layer alone |
 
 ---
 
@@ -205,63 +160,63 @@ All 9 figures — warm teal/coral/gold palette, publication-ready at 150 DPI.
 ### 01 — Dataset Overview
 > Sensor distributions split by failure/normal · Failure mode pie · Correlation heatmap
 
-![Dataset Overview](results/figures/01_dataset_overview.png)
+![Dataset Overview](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/01_dataset_overview.png)
 
 ---
 
 ### 02 — Model Comparison
 > All-model metric bars · ROC curves · 5-Fold CV F1 with error bars
 
-![Model Comparison](results/figures/02_model_comparison.png)
+![Model Comparison](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/02_model_comparison.png)
 
 ---
 
 ### 03 — Confusion Matrices (All 4 Models)
 > Side-by-side: Random Forest · Gradient Boosting · Logistic Regression · Ensemble
 
-![Confusion Matrices](results/figures/03_confusion_matrices.png)
+![Confusion Matrices](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/03_confusion_matrices.png)
 
 ---
 
 ### 04 — Precision-Recall & ROC Curves
 > All models overlaid · Baseline comparison · Critical for imbalanced datasets
 
-![PR ROC Curves](results/figures/04_pr_roc_curves.png)
+![PR ROC Curves](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/04_pr_roc_curves.png)
 
 ---
 
 ### 05 — Explainable AI — Feature Importance
 > RF + GBT ranked importance bars · Failure driver category donut chart
 
-![XAI Feature Importance](results/figures/05_xai_feature_importance.png)
+![XAI Feature Importance](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/05_xai_feature_importance.png)
 
 ---
 
 ### 06 — SMOTE Impact
 > Before vs After SMOTE: Recall +10pp · F1 improvement · Precision trade-off
 
-![SMOTE Impact](results/figures/06_smote_impact.png)
+![SMOTE Impact](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/06_smote_impact.png)
 
 ---
 
 ### 07 — Anomaly Detection
 > Score distribution · Speed-Torque anomaly scatter · Overlap with actual failures
 
-![Anomaly Detection](results/figures/07_anomaly_detection.png)
+![Anomaly Detection](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/07_anomaly_detection.png)
 
 ---
 
 ### 08 — Remaining Useful Life (RUL)
 > Failure probability vs tool wear · RUL estimate curve · Maintenance trigger zone
 
-![RUL Prediction](results/figures/08_rul_prediction.png)
+![RUL Prediction](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/08_rul_prediction.png)
 
 ---
 
 ### 09 — Research Summary Dashboard
 > All KPIs + all key charts in one publication-ready figure
 
-![Research Summary Dashboard](results/figures/09_research_summary_dashboard.png)
+![Research Summary Dashboard](https://raw.githubusercontent.com/rohanovro/digital-twin-predictive-maintenance/main/results/figures/09_research_summary_dashboard.png)
 
 ---
 
@@ -281,9 +236,6 @@ digital-twin-predictive-maintenance/
 │   ├── simulate.py                     # Real-time Digital Twin simulation
 │   └── predict.py                      # Single-sample inference + batch mode
 │
-├── 📂 notebooks/
-│   └── 01_full_analysis.ipynb          # (recommended) Jupyter walkthrough
-│
 ├── 📂 models/
 │   ├── random_forest.pkl               # Trained RF (joblib)
 │   ├── gradient_boost.pkl              # Trained GBT
@@ -296,17 +248,7 @@ digital-twin-predictive-maintenance/
 │   ├── metrics.json                    # All model metrics (JSON)
 │   ├── rul_estimates.csv               # RUL across wear levels
 │   ├── anomaly_results.json            # Isolation Forest output
-│   ├── simulation_log.csv              # Generated by simulate.py
-│   └── 📂 figures/
-│       ├── 01_dataset_overview.png
-│       ├── 02_model_comparison.png
-│       ├── 03_confusion_matrices.png
-│       ├── 04_pr_roc_curves.png
-│       ├── 05_xai_feature_importance.png
-│       ├── 06_smote_impact.png
-│       ├── 07_anomaly_detection.png
-│       ├── 08_rul_prediction.png
-│       └── 09_research_summary_dashboard.png
+│   └── 📂 figures/                     # All 9 research figures (150 DPI)
 │
 ├── 📂 dashboard/
 │   └── digital_twin_dashboard.html     # Interactive browser dashboard
@@ -326,66 +268,43 @@ digital-twin-predictive-maintenance/
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/digital-twin-predictive-maintenance.git
+git clone https://github.com/rohanovro/digital-twin-predictive-maintenance.git
 cd digital-twin-predictive-maintenance
 pip install -r requirements.txt
 ```
 
-### 2. Add Dataset
-
-Download from [UCI ML Repository](https://archive.ics.uci.edu/dataset/601) and place in `data/`:
-```bash
-# File should be at:
-data/ai4i2020.csv
-```
-
-### 3. Run Training Pipeline
+### 2. Train the Pipeline
 
 ```bash
 python src/train.py
 ```
 
-Expected output:
-```
-[DATA]   Loaded 10,000 rows | Failure rate: 3.39%
-[SMOTE]  Balanced: 7,729 normal | 7,729 failure (was 271)
-[RF]     ACC=0.9905  PREC=0.8657  REC=0.8529  F1=0.8593  AUC=0.9784
-[GBT]    ACC=0.9920  PREC=0.9643  REC=0.7941  F1=0.8710  AUC=0.9731
-[ENS]    ACC=0.9915  PREC=0.9180  REC=0.8235  F1=0.8682  AUC=0.9793
-[ANOMALY] Detected 52 anomalies (3.1% of test set)
-```
-
-### 4. Generate All Figures
+### 3. Generate All Figures
 
 ```bash
 python src/visualise.py
-# → results/figures/01_dataset_overview.png ... 09_research_summary_dashboard.png
 ```
 
-### 5. Run Real-Time Simulation
+### 4. Run Real-Time Simulation
 
 ```bash
-# Normal scenario
 python src/simulate.py --ticks 100 --interval 0.3
 
-# Stress test — overheating scenario
-python src/simulate.py --ticks 80 --scenario overheat
-
-# Overload scenario
-python src/simulate.py --ticks 80 --scenario overload
+# Stress scenarios
+python src/simulate.py --scenario overheat
+python src/simulate.py --scenario overload
 ```
 
-### 6. Single Prediction
+### 5. Single Prediction
 
 ```bash
-# From CLI
 python src/predict.py --air_temp 302.5 --proc_temp 314 --speed 1400 --torque 58 --wear 185
 
 # Interactive mode
 python src/predict.py --interactive
 ```
 
-### 7. Open Dashboard
+### 6. Open Dashboard
 
 ```bash
 open dashboard/digital_twin_dashboard.html
@@ -394,15 +313,6 @@ open dashboard/digital_twin_dashboard.html
 ---
 
 ## 🔬 Methodology
-
-### Feature Engineering — Why Physics Matters
-
-Raw sensor values miss interaction effects. Our engineered features capture physical relationships:
-
-- **`power = speed × torque`** — captures mechanical overloading (PWF)
-- **`wear_torque = wear × torque`** — non-linear wear acceleration under high load
-- **`temp_diff = proc_temp − air_temp`** — thermal gradient reveals heat dissipation failure before absolute temp does
-- **`power_temp = power × temp_diff`** — simultaneous mechanical + thermal stress
 
 ### Dual-Layer Detection System
 
@@ -414,54 +324,32 @@ Reading ──┤
             Combined Alert Level
 ```
 
-- **Supervised layer** learns from 339 labelled failure examples
-- **Unsupervised layer** learns normal operating envelope from 9,661 normal readings
-- Together they catch what neither catches alone
-
 ### SMOTE Strategy
+Applied **only to training data** — test set stays at original 3.4% failure rate for honest evaluation. Effect: Recall +10pp.
 
-Applied **only to training data** — test set stays at original 3.4% failure rate for honest evaluation:
-
-```python
-# Minority class (failures) duplicated with small Gaussian noise
-X_synth = X_minority[random_choice] + N(0, 0.05)
-```
-
-Effect: Recall +10pp, Precision −6pp — acceptable trade-off for safety-critical application.
-
-### RUL Estimation Formula
-
+### RUL Formula
 ```
 RUL(t) = (1 − P_failure(t)) × (Max_wear − Current_wear(t))
-
-where:
-  P_failure(t) = model output probability at time t
-  Max_wear     = 250 minutes (dataset maximum)
-  Current_wear = accumulated tool wear at time t
 ```
+
+### Alert Levels
+| Level | Threshold | Action |
+|-------|----------|--------|
+| ✅ OK | P < 30% | Continue |
+| ⚠️ WARNING | 30–60% | Increase monitoring |
+| 🔴 HIGH RISK | 60–80% | Schedule maintenance |
+| 🚨 CRITICAL | > 80% | Immediate shutdown |
 
 ---
 
 ## 🏆 Research Contributions
 
-1. **Dual-layer detection** — supervised RF + unsupervised Isolation Forest for comprehensive coverage
+1. **Dual-layer detection** — supervised RF + unsupervised Isolation Forest
 2. **Physics-informed sensor fusion** — 12 engineered features from 5 raw sensors
-3. **Novel XAI finding** — thermal gradient (temp_diff) outperforms raw temperatures for HDF prediction
+3. **Novel XAI finding** — thermal gradient outperforms raw temperatures for HDF prediction
 4. **SMOTE + stratified evaluation** — honest recall improvement without data leakage
-5. **RUL estimation** linked directly to live failure probability
-6. **Four-scenario simulation** — stress-tests the Digital Twin under different failure modes
-7. **Open-source, reproducible** — single `python src/train.py` reproduces all results
-
----
-
-## 📄 Research Paper
-
-Full IEEE-structured paper outline in [`docs/paper_outline.md`](docs/paper_outline.md), including:
-- Abstract, Introduction, Literature Review
-- Complete methodology with equations
-- Full results tables
-- Discussion of limitations & future work
-- Reference list template (IEEE format)
+5. **Four-scenario simulation** — stress-tests the Digital Twin under different failure modes
+6. **Open-source, reproducible** — single command reproduces all results
 
 ---
 
@@ -471,10 +359,10 @@ Full IEEE-structured paper outline in [`docs/paper_outline.md`](docs/paper_outli
 @article{digitaltwin_pm_2025,
   title   = {AI-Enhanced Digital Twin Framework for Predictive Maintenance
              of Industrial Machinery Using Sensor Fusion},
-  author  = {[Your Name]},
+  author  = {Rohanov, R.},
   journal = {IEEE Transactions on Industrial Electronics},
   year    = {2025},
-  url     = {https://github.com/YOUR_USERNAME/digital-twin-predictive-maintenance}
+  url     = {https://github.com/rohanovro/digital-twin-predictive-maintenance}
 }
 ```
 
@@ -490,7 +378,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 **Built for IEEE Publication · Erasmus Mundus Portfolio · Industry 4.0 Research**
 
-[![GitHub stars](https://img.shields.io/github/stars/YOUR_USERNAME/digital-twin-predictive-maintenance?style=social)](https://github.com/YOUR_USERNAME/digital-twin-predictive-maintenance)
+[![GitHub stars](https://img.shields.io/github/stars/rohanovro/digital-twin-predictive-maintenance?style=social)](https://github.com/rohanovro/digital-twin-predictive-maintenance)
 
 *If this project helped you, please ⭐ star the repo!*
 
