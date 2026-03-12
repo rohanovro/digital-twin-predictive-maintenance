@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI-Driven Digital Twin — Predictive Maintenance</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
+
+  :root {
+    --bg: #050a14;
+    --bg2: #080f1e;
+    --panel: #0b1628;
+    --border: #0d2a4a;
+    --accent: #00d4ff;
+    --accent2: #00ff88;
+    --accent3: #ff6b35;
+    --accent4: #c084fc;
+    --warn: #ffb347;
+    --danger: #ff4757;
+    --text: #c8d8e8;
+    --text-dim: #5a7a9a;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+    --glow2: 0 0 20px rgba(0,255,136,0.3);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Header */
+  .header {
+    position: relative;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,212,255,0.05) 0%, transparent 100%);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-left h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-shadow: var(--glow);
+  }
+
+  .header-left p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--accent2);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 1px;
+  }
+
+  .pulse-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(0,255,136,0.4); }
+    50% { opacity: 0.7; transform: scale(0.9); box-shadow: 0 0 0 6px rgba(0,255,136,0); }
+  }
+
+  .live-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  /* Tabs */
+  .tabs {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    background: var(--bg2);
+  }
+
+  .tab {
+    padding: 14px 24px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .tab:hover { color: var(--accent); }
+
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* Main content */
+  .main {
+    position: relative;
+    z-index: 5;
+    padding: 24px 32px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  /* Tab panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Grid layouts */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+  .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 20px; }
+
+  /* Panel */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.5;
+  }
+
+  .panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .panel-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .panel-body { padding: 16px; }
+
+  /* KPI Cards */
+  .kpi {
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kpi::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    opacity: 0.05;
+    background: var(--accent);
+  }
+
+  .kpi-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  .kpi-green .kpi-value { color: var(--accent2); text-shadow: var(--glow2); }
+  .kpi-blue .kpi-value { color: var(--accent); text-shadow: var(--glow); }
+  .kpi-orange .kpi-value { color: var(--accent3); text-shadow: 0 0 20px rgba(255,107,53,0.3); }
+  .kpi-purple .kpi-value { color: var(--accent4); text-shadow: 0 0 20px rgba(192,132,252,0.3); }
+
+  /* Chart canvas */
+  .chart-wrap {
+    position: relative;
+    padding: 16px;
+  }
+
+  /* Machine visual */
+  .machine-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .machine-part {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px;
+    text-align: center;
+    position: relative;
+    background: rgba(0,0,0,0.3);
+    transition: all 0.3s;
+  }
+
+  .machine-part-icon { font-size: 24px; margin-bottom: 8px; }
+
+  .machine-part-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .machine-part-status {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+
+  .status-ok { background: rgba(0,255,136,0.1); color: var(--accent2); border: 1px solid rgba(0,255,136,0.3); }
+  .status-warn { background: rgba(255,179,71,0.1); color: var(--warn); border: 1px solid rgba(255,179,71,0.3); }
+  .status-crit { background: rgba(255,71,87,0.1); color: var(--danger); border: 1px solid rgba(255,71,87,0.3); animation: blink 1s infinite; }
+
+  @keyframes blink { 50% { opacity: 0.4; } }
+
+  /* Health bar */
+  .health-bar-wrap { margin: 12px 16px; }
+  .health-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+  }
+  .health-bar-bg {
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .health-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    box-shadow: 0 0 10px rgba(0,255,136,0.5);
+  }
+  .health-bar-fill.warn { background: linear-gradient(90deg, var(--warn), var(--accent3)); }
+  .health-bar-fill.crit { background: linear-gradient(90deg, var(--danger), var(--accent3)); }
+
+  /* Simulation panel */
+  .sim-sensor-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .sensor-card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .sensor-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .sensor-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .sensor-unit {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  /* Feature importance bars */
+  .feat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .feat-name {
+    width: 160px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .feat-bar-bg { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; }
+  .feat-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent4)); }
+  .feat-pct {
+    width: 40px;
+    text-align: right;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    color: var(--accent);
+  }
+
+  /* Alert log */
+  .alert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .alert-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+  .alert-dot.high { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+  .alert-dot.med { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+  .alert-dot.low { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+  .alert-text { flex: 1; font-size: 12px; line-height: 1.5; color: var(--text); }
+  .alert-time { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-dim); }
+
+  /* Table */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+  .data-table td {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text);
+  }
+  .data-table tr:hover td { background: rgba(0,212,255,0.03); }
+
+  /* Sim button */
+  .btn {
+    padding: 10px 24px;
+    border: 1px solid var(--accent);
+    background: rgba(0,212,255,0.1);
+    color: var(--accent);
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .btn:hover { background: rgba(0,212,255,0.2); box-shadow: var(--glow); }
+  .btn.stop { border-color: var(--danger); color: var(--danger); background: rgba(255,71,87,0.1); }
+  .btn.stop:hover { background: rgba(255,71,87,0.2); }
+
+  /* Confusion matrix */
+  .cm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cm-cell {
+    padding: 20px;
+    text-align: center;
+    border-radius: 4px;
+  }
+  .cm-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .cm-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-top: 4px;
+    opacity: 0.7;
+  }
+  .cm-tn { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2); color: var(--accent2); }
+  .cm-fp { background: rgba(255,71,87,0.08); border: 1px solid rgba(255,71,87,0.2); color: var(--danger); }
+  .cm-fn { background: rgba(255,179,71,0.08); border: 1px solid rgba(255,179,71,0.2); color: var(--warn); }
+  .cm-tp { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); color: var(--accent); }
+
+  /* Section label */
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  /* Failure donut legend */
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-text { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text); flex: 1; }
+  .legend-val { font-family: 'Orbitron', monospace; font-size: 11px; color: var(--accent); }
+
+  /* Sim status bar */
+  .sim-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 16px;
+    background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid var(--border);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+  }
+  .sim-status-item { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
+  .sim-status-item span { color: var(--accent); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Responsive */
+  @media(max-width: 1024px) {
+    .grid-4 { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: repeat(2,1fr); }
+    .grid-2-1, .grid-1-2, .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <h1>⬡ DIGITAL TWIN — SMART MANUFACTURING</h1>
+    <p>AI4I 2020 PREDICTIVE MAINTENANCE · RANDOM FOREST · ANOMALY DETECTION · EXPLAINABLE AI</p>
+  </div>
+  <div class="header-right">
+    <div class="status-pill"><div class="pulse-dot"></div>SYSTEM ONLINE</div>
+    <div class="live-time" id="livetime"></div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview')">Overview</div>
+  <div class="tab" onclick="switchTab('ml')">ML Performance</div>
+  <div class="tab" onclick="switchTab('xai')">Explainable AI</div>
+  <div class="tab" onclick="switchTab('anomaly')">Anomaly Detection</div>
+  <div class="tab" onclick="switchTab('simulation')">Live Simulation</div>
+</div>
+
+<!-- OVERVIEW TAB -->
+<div class="main">
+<div id="tab-overview" class="tab-panel active">
+
+  <!-- KPI Row -->
+  <div class="grid-4">
+    <div class="panel kpi kpi-green">
+      <div class="kpi-label">Model Accuracy</div>
+      <div class="kpi-value">99.0%</div>
+      <div class="kpi-sub">Random Forest · 200 trees</div>
+    </div>
+    <div class="panel kpi kpi-blue">
+      <div class="kpi-label">ROC-AUC Score</div>
+      <div class="kpi-value">0.974</div>
+      <div class="kpi-sub">Excellent discrimination</div>
+    </div>
+    <div class="panel kpi kpi-orange">
+      <div class="kpi-label">Failure Rate</div>
+      <div class="kpi-value">3.39%</div>
+      <div class="kpi-sub">339 / 10,000 samples</div>
+    </div>
+    <div class="panel kpi kpi-purple">
+      <div class="kpi-label">Anomalies Found</div>
+      <div class="kpi-value">61</div>
+      <div class="kpi-sub">Isolation Forest · test set</div>
+    </div>
+  </div>
+
+  <!-- Machine Twin + Failure Types + Wear Trend -->
+  <div class="grid-2-1">
+    <!-- Machine Digital Twin Visual -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Virtual Machine Twin</span>
+        <span class="panel-badge" id="overall-status">OPERATIONAL</span>
+      </div>
+
+      <!-- Health bars -->
+      <div style="padding: 12px 16px 0;">
+        <div class="health-bar-wrap" style="margin:0 0 10px;">
+          <div class="health-label">
+            <span style="color:var(--text-dim); font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1px;">OVERALL HEALTH</span>
+            <span style="color:var(--accent2); font-family:'Orbitron',monospace; font-size:11px;">82%</span>
+          </div>
+          <div class="health-bar-bg"><div class="health-bar-fill" style="width:82%"></div></div>
+        </div>
+      </div>
+
+      <div class="machine-grid">
+        <div class="machine-part">
+          <div class="machine-part-icon">⚙️</div>
+          <div class="machine-part-name">SPINDLE</div>
+          <div class="machine-part-status status-ok">HEALTHY</div>
+        </div>
+        <div class="machine-part">
+          <div class="machine-part-icon">🔧</div>
+          <div class="machine-part-name">TOOL BIT</div>
+          <div class="machine-part-status status-warn">WEAR ↑</div>
+        </div>
+        <div class="machine-part">
+          <div class="machine-part-icon">🌡️</div>
+          <div class="machine-part-name">THERMAL</div>
+          <div class="machine-part-status status-ok">NORMAL</div>
+        </div>
+        <div class="machine-part">
+          <div class="machine-part-icon">⚡</div>
+          <div class="machine-part-name">MOTOR</div>
+          <div class="machine-part-status status-ok">HEALTHY</div>
+        </div>
+        <div class="machine-part">
+          <div class="machine-part-icon">🔩</div>
+          <div class="machine-part-name">BEARING</div>
+          <div class="machine-part-status status-warn">MONITOR</div>
+        </div>
+        <div class="machine-part">
+          <div class="machine-part-icon">💧</div>
+          <div class="machine-part-name">COOLANT</div>
+          <div class="machine-part-status status-ok">NORMAL</div>
+        </div>
+      </div>
+
+      <!-- Sensor mini-row -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:12px 16px;">
+        <div style="text-align:center">
+          <div style="font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); letter-spacing:1px; margin-bottom:4px;">AIR TEMP</div>
+          <div style="font-family:'Orbitron',monospace; font-size:16px; color:var(--accent);">300.0<span style="font-size:9px;">K</span></div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); letter-spacing:1px; margin-bottom:4px;">PROC TEMP</div>
+          <div style="font-family:'Orbitron',monospace; font-size:16px; color:var(--accent);">310.0<span style="font-size:9px;">K</span></div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); letter-spacing:1px; margin-bottom:4px;">SPEED</div>
+          <div style="font-family:'Orbitron',monospace; font-size:16px; color:var(--accent2);">1538<span style="font-size:9px;">rpm</span></div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); letter-spacing:1px; margin-bottom:4px;">TORQUE</div>
+          <div style="font-family:'Orbitron',monospace; font-size:16px; color:var(--accent2);">39.9<span style="font-size:9px;">Nm</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Failure Types Donut -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Failure Modes</span>
+        <span class="panel-badge">5 TYPES</span>
+      </div>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="donutChart"></canvas>
+      </div>
+      <div style="padding: 0 16px 16px;">
+        <div class="legend-row"><div class="legend-dot" style="background:#00d4ff"></div><div class="legend-text">Tool Wear Failure (TWF)</div><div class="legend-val">46</div></div>
+        <div class="legend-row"><div class="legend-dot" style="background:#00ff88"></div><div class="legend-text">Heat Dissipation (HDF)</div><div class="legend-val">115</div></div>
+        <div class="legend-row"><div class="legend-dot" style="background:#ff6b35"></div><div class="legend-text">Power Failure (PWF)</div><div class="legend-val">95</div></div>
+        <div class="legend-row"><div class="legend-dot" style="background:#c084fc"></div><div class="legend-text">Overstrain (OSF)</div><div class="legend-val">98</div></div>
+        <div class="legend-row"><div class="legend-dot" style="background:#ffb347"></div><div class="legend-text">Random Failure (RNF)</div><div class="legend-val">19</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Failure prob over tool wear + Time series -->
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Failure Probability vs Tool Wear</span>
+        <span class="panel-badge">TREND ANALYSIS</span>
+      </div>
+      <div class="chart-wrap" style="height:220px;">
+        <canvas id="wearChart"></canvas>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Sensor Time Series (Sample)</span>
+        <span class="panel-badge">FIRST 200 OBS</span>
+      </div>
+      <div class="chart-wrap" style="height:220px;">
+        <canvas id="timeseriesChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Log -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Alert Log</span>
+      <span class="panel-badge">LIVE</span>
+    </div>
+    <div class="panel-body">
+      <div class="alert-item">
+        <div class="alert-dot high"></div>
+        <div class="alert-text"><strong style="color:var(--danger)">CRITICAL</strong> — Tool wear approaching failure threshold (TWF). Estimated RUL: 12 hours.</div>
+        <div class="alert-time">09:42:11</div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot med"></div>
+        <div class="alert-text"><strong style="color:var(--warn)">WARNING</strong> — Heat dissipation anomaly detected. Process temp delta: +8.3K above normal.</div>
+        <div class="alert-time">09:38:54</div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot med"></div>
+        <div class="alert-text"><strong style="color:var(--warn)">WARNING</strong> — Rotational speed drop detected. Power fluctuation indicator elevated.</div>
+        <div class="alert-time">09:31:20</div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot low"></div>
+        <div class="alert-text"><strong style="color:var(--accent2)">INFO</strong> — Model retrained. CV F1: 0.854. Deployed to production twin.</div>
+        <div class="alert-time">09:15:00</div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot low"></div>
+        <div class="alert-text"><strong style="color:var(--accent2)">INFO</strong> — System startup complete. All 5 sensor channels nominal.</div>
+        <div class="alert-time">09:00:00</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ML PERFORMANCE TAB -->
+<div id="tab-ml" class="tab-panel">
+  <div class="grid-4" style="margin-bottom:20px;">
+    <div class="panel kpi kpi-green"><div class="kpi-label">Accuracy</div><div class="kpi-value">99.0%</div><div class="kpi-sub">Test set · 2000 samples</div></div>
+    <div class="panel kpi kpi-blue"><div class="kpi-label">Precision</div><div class="kpi-value">94.4%</div><div class="kpi-sub">Low false positives</div></div>
+    <div class="panel kpi kpi-orange"><div class="kpi-label">Recall</div><div class="kpi-value">75.0%</div><div class="kpi-sub">Failure capture rate</div></div>
+    <div class="panel kpi kpi-purple"><div class="kpi-label">F1 Score</div><div class="kpi-value">0.836</div><div class="kpi-sub">5-fold CV: 0.854</div></div>
+  </div>
+
+  <div class="grid-2">
+    <!-- ROC Curve -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">ROC Curve</span>
+        <span class="panel-badge">AUC = 0.974</span>
+      </div>
+      <div class="chart-wrap" style="height:280px;">
+        <canvas id="rocChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Confusion Matrix -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Confusion Matrix</span>
+        <span class="panel-badge">TEST SET N=2000</span>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid; grid-template-columns:auto 1fr 1fr; align-items:center; gap:4px; margin-bottom:8px;">
+          <div></div>
+          <div class="section-label">PRED: NO FAIL</div>
+          <div class="section-label">PRED: FAIL</div>
+        </div>
+        <div style="display:grid; grid-template-columns:auto 1fr 1fr; align-items:center; gap:8px;">
+          <div style="writing-mode:vertical-rl; transform:rotate(180deg); font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--text-dim); text-align:center;">ACTUAL</div>
+          <div class="cm-cell cm-tn"><div class="cm-value">1929</div><div class="cm-label">TRUE NEG</div></div>
+          <div class="cm-cell cm-fp"><div class="cm-value">3</div><div class="cm-label">FALSE POS</div></div>
+          <div style=""></div>
+          <div class="cm-cell cm-fn"><div class="cm-value">17</div><div class="cm-label">FALSE NEG</div></div>
+          <div class="cm-cell cm-tp"><div class="cm-value">51</div><div class="cm-label">TRUE POS</div></div>
+        </div>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border);">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="text-align:center">
+              <div style="font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); letter-spacing:1px; margin-bottom:4px;">SPECIFICITY</div>
+              <div style="font-family:'Orbitron',monospace; font-size:18px; color:var(--accent2);">99.8%</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); letter-spacing:1px; margin-bottom:4px;">SENSITIVITY</div>
+              <div style="font-family:'Orbitron',monospace; font-size:18px; color:var(--accent);">75.0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cross validation -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Cross-Validation Results</span>
+      <span class="panel-badge">5-FOLD STRATIFIED</span>
+    </div>
+    <div class="chart-wrap" style="height:200px;">
+      <canvas id="cvChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Model info table -->
+  <div class="panel" style="margin-top:0;">
+    <div class="panel-header"><span class="panel-title">Model Configuration</span></div>
+    <div class="panel-body">
+      <table class="data-table">
+        <tr><th>Parameter</th><th>Value</th><th>Notes</th></tr>
+        <tr><td>Algorithm</td><td style="color:var(--accent)">Random Forest Classifier</td><td>Ensemble of decision trees</td></tr>
+        <tr><td>n_estimators</td><td style="color:var(--accent)">200</td><td>Number of trees</td></tr>
+        <tr><td>class_weight</td><td style="color:var(--accent)">balanced</td><td>Handles 3.4% minority class</td></tr>
+        <tr><td>Train / Test Split</td><td style="color:var(--accent)">80% / 20%</td><td>Stratified · 8000 / 2000</td></tr>
+        <tr><td>Feature Engineering</td><td style="color:var(--accent)">10 features</td><td>Includes power, temp_diff, wear interactions</td></tr>
+        <tr><td>Scaling</td><td style="color:var(--accent)">StandardScaler</td><td>Applied to all numeric features</td></tr>
+        <tr><td>Dataset</td><td style="color:var(--accent)">AI4I 2020 (UCI)</td><td>10,000 samples · 14 columns</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLAINABLE AI TAB -->
+<div id="tab-xai" class="tab-panel">
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Feature Importance (Gini)</span>
+        <span class="panel-badge">GLOBAL XAI</span>
+      </div>
+      <div class="panel-body">
+        <div class="feat-row">
+          <div class="feat-name">Rotational Speed</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:100%"></div></div>
+          <div class="feat-pct">19.3%</div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-name">Power (Speed×Torque)</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:94%"></div></div>
+          <div class="feat-pct">18.2%</div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-name">Torque</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:92%"></div></div>
+          <div class="feat-pct">17.8%</div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-name">Tool Wear</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:59%"></div></div>
+          <div class="feat-pct">11.4%</div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-name">Wear × Torque</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:53%"></div></div>
+          <div class="feat-pct">10.3%</div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-name">Temp Difference</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:51%"></div></div>
+          <div class="feat-pct">9.9%</div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-name">Speed × Wear</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:30%"></div></div>
+          <div class="feat-pct">5.9%</div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-name">Air Temperature</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:22%"></div></div>
+          <div class="feat-pct">4.2%</div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-name">Process Temperature</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:13%"></div></div>
+          <div class="feat-pct">2.5%</div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-name">Machine Type</div>
+          <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:3%"></div></div>
+          <div class="feat-pct">0.6%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Feature Importance Chart</span>
+        <span class="panel-badge">RANKED</span>
+      </div>
+      <div class="chart-wrap" style="height:340px;">
+        <canvas id="featChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- XAI Insights -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">XAI Research Insights</span>
+      <span class="panel-badge">INTERPRETATION</span>
+    </div>
+    <div class="panel-body" style="display:grid; grid-template-columns: repeat(3,1fr); gap:16px;">
+      <div style="padding:14px; background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.15); border-radius:4px;">
+        <div style="font-family:'Orbitron',monospace; font-size:10px; color:var(--accent); letter-spacing:2px; margin-bottom:8px;">MECHANICAL LOAD</div>
+        <div style="font-size:12px; line-height:1.6; color:var(--text);">Rotational speed and torque collectively explain <strong style="color:var(--accent)">37.1%</strong> of failure prediction. Their interaction (power feature) adds another 18.2%, confirming that mechanical overloading is the primary failure driver.</div>
+      </div>
+      <div style="padding:14px; background:rgba(0,255,136,0.05); border:1px solid rgba(0,255,136,0.15); border-radius:4px;">
+        <div style="font-family:'Orbitron',monospace; font-size:10px; color:var(--accent2); letter-spacing:2px; margin-bottom:8px;">WEAR DEGRADATION</div>
+        <div style="font-size:12px; line-height:1.6; color:var(--text);">Tool wear (11.4%) combined with wear×torque interaction (10.3%) shows that <strong style="color:var(--accent2)">accumulated wear under high torque</strong> significantly amplifies failure risk — supporting a non-linear degradation model.</div>
+      </div>
+      <div style="padding:14px; background:rgba(192,132,252,0.05); border:1px solid rgba(192,132,252,0.15); border-radius:4px;">
+        <div style="font-family:'Orbitron',monospace; font-size:10px; color:var(--accent4); letter-spacing:2px; margin-bottom:8px;">THERMAL EFFECTS</div>
+        <div style="font-size:12px; line-height:1.6; color:var(--text);">Temperature difference (process − air) accounts for <strong style="color:var(--accent4)">9.9%</strong> of importance, more than raw temperatures individually. This suggests <strong>thermal gradient</strong> is a better predictor than absolute temperature for heat dissipation failures.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ANOMALY DETECTION TAB -->
+<div id="tab-anomaly" class="tab-panel">
+  <div class="grid-3">
+    <div class="panel kpi kpi-blue"><div class="kpi-label">Anomalies Detected</div><div class="kpi-value">61</div><div class="kpi-sub">of 2,000 test samples</div></div>
+    <div class="panel kpi kpi-orange"><div class="kpi-label">Anomaly Rate</div><div class="kpi-value">3.05%</div><div class="kpi-sub">Isolation Forest</div></div>
+    <div class="panel kpi kpi-green"><div class="kpi-label">Contamination</div><div class="kpi-value">3.4%</div><div class="kpi-sub">Set from dataset failure rate</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Anomaly Score Distribution</span>
+        <span class="panel-badge">ISOLATION FOREST</span>
+      </div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="anomalyChart"></canvas>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Detected Anomalies — Sample</span>
+        <span class="panel-badge">TOP 10</span>
+      </div>
+      <div class="panel-body" style="padding:8px 16px;">
+        <table class="data-table">
+          <tr><th>#</th><th>Air Temp (K)</th><th>Speed (rpm)</th><th>Torque (Nm)</th><th>Wear (min)</th><th>Status</th></tr>
+          <tr><td>1</td><td>299.4</td><td>1203</td><td>68.3</td><td>189</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+          <tr><td>2</td><td>304.2</td><td>1865</td><td>21.1</td><td>241</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+          <tr><td>3</td><td>295.8</td><td>2860</td><td>14.5</td><td>12</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+          <tr><td>4</td><td>302.1</td><td>1102</td><td>72.8</td><td>198</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+          <tr><td>5</td><td>299.9</td><td>1290</td><td>64.5</td><td>220</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+          <tr><td>6</td><td>301.3</td><td>3200</td><td>11.9</td><td>5</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+          <tr><td>7</td><td>308.5</td><td>1450</td><td>55.2</td><td>247</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+          <tr><td>8</td><td>297.2</td><td>1985</td><td>18.3</td><td>198</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+          <tr><td>9</td><td>303.7</td><td>1105</td><td>69.7</td><td>201</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+          <tr><td>10</td><td>300.0</td><td>2945</td><td>13.2</td><td>8</td><td><span style="color:var(--danger); font-family:'Orbitron',monospace; font-size:10px;">ANOMALY</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Anomaly Detection — Method</span>
+      <span class="panel-badge">ISOLATION FOREST</span>
+    </div>
+    <div class="panel-body" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+      <div style="padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:4px;">
+        <div style="font-family:'Orbitron',monospace; font-size:10px; color:var(--accent); letter-spacing:2px; margin-bottom:8px;">HOW IT WORKS</div>
+        <div style="font-size:12px; line-height:1.7; color:var(--text);">Isolation Forest randomly partitions data using binary trees. Anomalies, being rare and different, require fewer splits to isolate. Anomaly score = average path length across all trees.</div>
+      </div>
+      <div style="padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:4px;">
+        <div style="font-family:'Orbitron',monospace; font-size:10px; color:var(--accent2); letter-spacing:2px; margin-bottom:8px;">WHY UNSUPERVISED</div>
+        <div style="font-size:12px; line-height:1.7; color:var(--text);">In real factories, labeled failure data is scarce. Isolation Forest detects never-before-seen failure patterns without requiring labeled training data — ideal for early warning systems.</div>
+      </div>
+      <div style="padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:4px;">
+        <div style="font-family:'Orbitron',monospace; font-size:10px; color:var(--accent4); letter-spacing:2px; margin-bottom:8px;">RESEARCH VALUE</div>
+        <div style="font-size:12px; line-height:1.7; color:var(--text);">Combining supervised RF (failure classification) with unsupervised Isolation Forest (anomaly detection) creates a dual-layer detection system — a key contribution for IEEE paper novelty.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIMULATION TAB -->
+<div id="tab-simulation" class="tab-panel">
+  <div class="panel" style="margin-bottom:16px;">
+    <div class="sim-status-bar">
+      <div class="sim-status-item">STATUS: <span id="sim-status-text">IDLE</span></div>
+      <div class="sim-status-item">TICK: <span id="sim-tick">0</span></div>
+      <div class="sim-status-item">FAILURES PREDICTED: <span id="sim-fail-count">0</span></div>
+      <div class="sim-status-item">ANOMALIES: <span id="sim-anom-count">0</span></div>
+      <div style="margin-left:auto; display:flex; gap:10px;">
+        <button class="btn" id="sim-btn" onclick="toggleSim()">▶ START SIMULATION</button>
+        <button class="btn" onclick="resetSim()">↺ RESET</button>
+      </div>
+    </div>
+
+    <div style="padding:16px;">
+      <div class="sim-sensor-row">
+        <div class="sensor-card">
+          <div class="sensor-name">AIR TEMPERATURE</div>
+          <div class="sensor-value" id="s-airtemp">300.0</div>
+          <div class="sensor-unit">Kelvin</div>
+        </div>
+        <div class="sensor-card">
+          <div class="sensor-name">PROCESS TEMPERATURE</div>
+          <div class="sensor-value" id="s-proctemp">310.0</div>
+          <div class="sensor-unit">Kelvin</div>
+        </div>
+        <div class="sensor-card">
+          <div class="sensor-name">ROTATIONAL SPEED</div>
+          <div class="sensor-value" id="s-speed" style="color:var(--accent2)">1538</div>
+          <div class="sensor-unit">RPM</div>
+        </div>
+        <div class="sensor-card">
+          <div class="sensor-name">TORQUE</div>
+          <div class="sensor-value" id="s-torque" style="color:var(--accent2)">39.9</div>
+          <div class="sensor-unit">Nm</div>
+        </div>
+        <div class="sensor-card">
+          <div class="sensor-name">TOOL WEAR</div>
+          <div class="sensor-value" id="s-wear" style="color:var(--warn)">0</div>
+          <div class="sensor-unit">minutes</div>
+        </div>
+        <div class="sensor-card">
+          <div class="sensor-name">FAILURE PROBABILITY</div>
+          <div class="sensor-value" id="s-failprob" style="color:var(--accent)">--</div>
+          <div class="sensor-unit">%</div>
+        </div>
+      </div>
+
+      <!-- Machine health bar in sim -->
+      <div style="margin-bottom:16px;">
+        <div class="health-label" style="display:flex; justify-content:space-between; font-family:'Share Tech Mono',monospace; font-size:11px; margin-bottom:6px;">
+          <span style="color:var(--text-dim)">MACHINE HEALTH</span>
+          <span id="health-pct" style="color:var(--accent2)">100%</span>
+        </div>
+        <div class="health-bar-bg">
+          <div id="health-fill" class="health-bar-fill" style="width:100%"></div>
+        </div>
+      </div>
+
+      <!-- Prediction display -->
+      <div id="sim-prediction" style="padding:12px 16px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:4px; margin-bottom:16px; font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--text-dim); letter-spacing:1px;">
+        AI PREDICTION: Press START to begin real-time simulation...
+      </div>
+    </div>
+  </div>
+
+  <!-- Live charts -->
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Live Sensor Stream</span><span class="panel-badge">REAL-TIME</span></div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="liveChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Failure Probability — Live</span><span class="panel-badge">AI MODEL</span></div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="liveProbChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+
+<script>
+// ===== DATA =====
+const mlData = {
+  metrics: {accuracy:0.99, precision:0.9444, recall:0.75, f1:0.8361, auc:0.9738, cv_f1:0.8537},
+  confusionMatrix: [[1929,3],[17,51]],
+  featureImportance: {
+    'Rotational Speed':0.1926,'Power (Speed×Torque)':0.1818,'Torque':0.1778,
+    'Tool Wear':0.1142,'Wear×Torque':0.1032,'Temp Difference':0.0985,
+    'Speed×Wear':0.0588,'Air Temperature':0.0422,'Process Temperature':0.0248,'Machine Type':0.0062
+  },
+  failureTypes: {TWF:46,HDF:115,PWF:95,OSF:98,RNF:19},
+  wearLabels: ['(0,12]','(12,24]','(24,36]','(36,48]','(48,60]','(60,72]','(72,84]','(84,96]','(96,108]','(108,120]','(120,132]','(132,144]','(144,156]','(156,168]','(168,180]','(180,192]','(192,204]','(204,216]','(216,228]','(228,240]'],
+  wearValues: [0,0,0.5,0.5,0.8,1.0,1.5,2.5,3.0,4.2,5.8,7.1,9.2,11.5,15.0,20.3,27.8,38.2,52.1,71.4],
+};
+
+// ===== LIVE TIME =====
+function updateTime() {
+  const now = new Date();
+  document.getElementById('livetime').textContent = now.toLocaleTimeString('en-US',{hour12:false});
+}
+setInterval(updateTime, 1000); updateTime();
+
+// ===== TAB SWITCHING =====
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.target.classList.add('active');
+  if(name === 'simulation') initLiveCharts();
+}
+
+// ===== CHART DEFAULTS =====
+Chart.defaults.color = '#5a7a9a';
+Chart.defaults.borderColor = '#0d2a4a';
+Chart.defaults.font.family = "'Share Tech Mono', monospace";
+Chart.defaults.font.size = 10;
+
+// ===== DONUT CHART =====
+new Chart(document.getElementById('donutChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['TWF','HDF','PWF','OSF','RNF'],
+    datasets: [{
+      data: [46,115,95,98,19],
+      backgroundColor: ['rgba(0,212,255,0.7)','rgba(0,255,136,0.7)','rgba(255,107,53,0.7)','rgba(192,132,252,0.7)','rgba(255,179,71,0.7)'],
+      borderColor: ['#00d4ff','#00ff88','#ff6b35','#c084fc','#ffb347'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    cutout: '65%'
+  }
+});
+
+// ===== WEAR TREND CHART =====
+new Chart(document.getElementById('wearChart'), {
+  type: 'line',
+  data: {
+    labels: mlData.wearLabels,
+    datasets: [{
+      label: 'Failure Probability (%)',
+      data: mlData.wearValues,
+      borderColor: '#ff6b35',
+      backgroundColor: 'rgba(255,107,53,0.1)',
+      fill: true,
+      tension: 0.4,
+      pointRadius: 3,
+      pointBackgroundColor: '#ff6b35'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { maxTicksLimit: 8, maxRotation: 45 }, grid: { color: '#0d2a4a' } },
+      y: { title: { display: true, text: 'Failure %', color: '#5a7a9a' }, grid: { color: '#0d2a4a' } }
+    }
+  }
+});
+
+// ===== TIME SERIES CHART =====
+const tsLabels = Array.from({length:200},(_,i)=>i+1);
+const wearTs = Array.from({length:200},(_,i)=> Math.floor(i * 1.2 + Math.random()*5));
+const speedTs = Array.from({length:200},()=> 1500 + (Math.random()-0.5)*400);
+new Chart(document.getElementById('timeseriesChart'), {
+  type: 'line',
+  data: {
+    labels: tsLabels,
+    datasets: [
+      {label:'Tool Wear (min)', data: wearTs, borderColor:'#ffb347', backgroundColor:'transparent', tension:0.2, pointRadius:0, yAxisID:'y1'},
+      {label:'Speed (rpm/10)', data: speedTs.map(v=>v/10), borderColor:'#00d4ff', backgroundColor:'transparent', tension:0.3, pointRadius:0, yAxisID:'y'}
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true, position:'top', labels:{boxWidth:10, padding:15} } },
+    scales: {
+      x: { grid:{color:'#0d2a4a'}, ticks:{maxTicksLimit:8} },
+      y: { grid:{color:'#0d2a4a'}, position:'left' },
+      y1: { grid:{display:false}, position:'right' }
+    }
+  }
+});
+
+// ===== ROC CHART =====
+const fpr = [0,0.001,0.003,0.005,0.008,0.012,0.018,0.025,0.04,0.06,0.1,0.15,0.25,0.4,0.6,0.8,1.0];
+const tpr = [0,0.35,0.52,0.60,0.67,0.72,0.76,0.79,0.83,0.87,0.91,0.94,0.96,0.97,0.98,0.99,1.0];
+new Chart(document.getElementById('rocChart'), {
+  type: 'line',
+  data: {
+    labels: fpr,
+    datasets: [
+      {label:'ROC Curve (AUC=0.974)', data: tpr, borderColor:'#00d4ff', backgroundColor:'rgba(0,212,255,0.05)', fill:true, tension:0.3, pointRadius:0},
+      {label:'Random Classifier', data: fpr, borderColor:'rgba(255,255,255,0.2)', backgroundColor:'transparent', borderDash:[5,5], pointRadius:0}
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:true, position:'bottom', labels:{boxWidth:10}} },
+    scales: {
+      x: { title:{display:true, text:'False Positive Rate', color:'#5a7a9a'}, grid:{color:'#0d2a4a'} },
+      y: { title:{display:true, text:'True Positive Rate', color:'#5a7a9a'}, grid:{color:'#0d2a4a'} }
+    }
+  }
+});
+
+// ===== CV CHART =====
+const cvScores = [0.842, 0.871, 0.848, 0.855, 0.862];
+new Chart(document.getElementById('cvChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Fold 1','Fold 2','Fold 3','Fold 4','Fold 5'],
+    datasets: [{
+      label: 'F1 Score',
+      data: cvScores,
+      backgroundColor: ['rgba(0,212,255,0.4)','rgba(0,255,136,0.4)','rgba(192,132,252,0.4)','rgba(255,107,53,0.4)','rgba(255,179,71,0.4)'],
+      borderColor: ['#00d4ff','#00ff88','#c084fc','#ff6b35','#ffb347'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend:{display:false},
+      annotation: {}
+    },
+    scales: {
+      x:{grid:{color:'#0d2a4a'}},
+      y:{min:0.8, max:0.9, grid:{color:'#0d2a4a'}, ticks:{stepSize:0.02}}
+    }
+  }
+});
+
+// ===== FEATURE IMPORTANCE CHART =====
+const featNames = Object.keys(mlData.featureImportance).reverse();
+const featVals = Object.values(mlData.featureImportance).reverse();
+new Chart(document.getElementById('featChart'), {
+  type: 'bar',
+  data: {
+    labels: featNames,
+    datasets: [{
+      data: featVals.map(v=>(v*100).toFixed(1)),
+      backgroundColor: featVals.map((_,i) => `hsla(${180+i*15},90%,60%,0.5)`),
+      borderColor: featVals.map((_,i) => `hsl(${180+i*15},90%,60%)`),
+      borderWidth: 1
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:false} },
+    scales: {
+      x: { title:{display:true,text:'Importance (%)',color:'#5a7a9a'}, grid:{color:'#0d2a4a'} },
+      y: { grid:{display:false}, ticks:{font:{size:9}} }
+    }
+  }
+});
+
+// ===== ANOMALY CHART =====
+const anomScores = Array.from({length:2000},(_,i)=>{
+  if(i < 61) return (Math.random()*0.3 - 0.5);
+  return (Math.random()*0.3 + 0.05);
+}).sort((a,b)=>a-b);
+const histBins = Array.from({length:30},(_,i)=> -0.5 + i*0.035);
+const normCounts = new Array(30).fill(0);
+const anomCounts = new Array(30).fill(0);
+anomScores.forEach(s => {
+  const bin = Math.min(29, Math.floor((s+0.5)/0.035));
+  if(s < -0.1) anomCounts[bin]++;
+  else normCounts[bin]++;
+});
+new Chart(document.getElementById('anomalyChart'), {
+  type: 'bar',
+  data: {
+    labels: histBins.map(v=>v.toFixed(2)),
+    datasets: [
+      {label:'Normal', data:normCounts, backgroundColor:'rgba(0,212,255,0.4)', borderColor:'#00d4ff', borderWidth:1},
+      {label:'Anomaly', data:anomCounts, backgroundColor:'rgba(255,71,87,0.5)', borderColor:'#ff4757', borderWidth:1}
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:true, position:'top', labels:{boxWidth:10}} },
+    scales: {
+      x: { stacked:true, title:{display:true,text:'Anomaly Score',color:'#5a7a9a'}, grid:{color:'#0d2a4a'}, ticks:{maxTicksLimit:10} },
+      y: { stacked:true, grid:{color:'#0d2a4a'} }
+    }
+  }
+});
+
+// ===== SIMULATION =====
+let simRunning = false, simInterval = null, simTick = 0;
+let simFailCount = 0, simAnomCount = 0;
+let liveChart = null, liveProbChart = null;
+const liveLabels = [], liveSpeedData = [], liveTorqueData = [], liveProbData = [];
+
+function initLiveCharts() {
+  if(liveChart) return;
+  liveChart = new Chart(document.getElementById('liveChart'), {
+    type: 'line',
+    data: {
+      labels: liveLabels,
+      datasets: [
+        {label:'Speed/100', data:liveSpeedData, borderColor:'#00d4ff', pointRadius:0, tension:0.3, backgroundColor:'transparent'},
+        {label:'Torque', data:liveTorqueData, borderColor:'#00ff88', pointRadius:0, tension:0.3, backgroundColor:'transparent'}
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, animation:false,
+      plugins:{legend:{display:true, position:'top', labels:{boxWidth:10}}},
+      scales:{x:{grid:{color:'#0d2a4a'},ticks:{maxTicksLimit:6}}, y:{grid:{color:'#0d2a4a'}}}
+    }
+  });
+  liveProbChart = new Chart(document.getElementById('liveProbChart'), {
+    type: 'line',
+    data: {
+      labels: liveLabels,
+      datasets: [{
+        label:'Failure Probability (%)',
+        data: liveProbData,
+        borderColor:'#ff6b35',
+        backgroundColor:'rgba(255,107,53,0.1)',
+        fill:true, pointRadius:0, tension:0.4
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, animation:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{color:'#0d2a4a'},ticks:{maxTicksLimit:6}},
+        y:{min:0, max:100, grid:{color:'#0d2a4a'}, ticks:{callback:v=>v+'%'}}
+      }
+    }
+  });
+}
+
+function toggleSim() {
+  if(simRunning) {
+    clearInterval(simInterval); simRunning = false;
+    document.getElementById('sim-btn').textContent = '▶ START SIMULATION';
+    document.getElementById('sim-btn').classList.remove('stop');
+    document.getElementById('sim-status-text').textContent = 'PAUSED';
+  } else {
+    simRunning = true;
+    document.getElementById('sim-btn').textContent = '⏸ PAUSE';
+    document.getElementById('sim-btn').classList.add('stop');
+    document.getElementById('sim-status-text').textContent = 'RUNNING';
+    simInterval = setInterval(simStep, 800);
+  }
+}
+
+function resetSim() {
+  clearInterval(simInterval); simRunning = false;
+  simTick = 0; simFailCount = 0; simAnomCount = 0;
+  liveLabels.length = 0; liveSpeedData.length = 0; liveTorqueData.length = 0; liveProbData.length = 0;
+  document.getElementById('sim-btn').textContent = '▶ START SIMULATION';
+  document.getElementById('sim-btn').classList.remove('stop');
+  document.getElementById('sim-status-text').textContent = 'IDLE';
+  document.getElementById('sim-tick').textContent = '0';
+  document.getElementById('sim-fail-count').textContent = '0';
+  document.getElementById('sim-anom-count').textContent = '0';
+  document.getElementById('s-wear').textContent = '0';
+  document.getElementById('health-fill').style.width = '100%';
+  document.getElementById('health-pct').textContent = '100%';
+  document.getElementById('health-fill').className = 'health-bar-fill';
+  document.getElementById('sim-prediction').style.color = '#5a7a9a';
+  document.getElementById('sim-prediction').textContent = 'AI PREDICTION: Press START to begin...';
+  if(liveChart){liveChart.update(); liveProbChart.update();}
+}
+
+function simStep() {
+  simTick++;
+  const wear = Math.min(250, simTick * 2.5 + (Math.random()-0.5)*5);
+  const airTemp = 300 + Math.random()*2 - 1;
+  const procTemp = 310 + Math.random()*3 - 1.5 + wear*0.01;
+  const speed = 1538 + (Math.random()-0.5)*300 - wear*0.5;
+  const torque = 39.9 + (Math.random()-0.5)*10 + wear*0.1;
+
+  // Estimate failure probability heuristically (simulates model output)
+  const wearFactor = Math.pow(wear/250, 2);
+  const torqueFactor = Math.max(0, (torque - 45)/30);
+  const speedFactor = Math.max(0, (1800 - speed)/600);
+  const tempFactor = Math.max(0, (procTemp - airTemp - 10)/5);
+  let failProb = Math.min(95, (wearFactor*40 + torqueFactor*20 + speedFactor*15 + tempFactor*10 + Math.random()*5));
+  const isAnomaly = Math.random() < 0.04;
+  if(isAnomaly) { failProb = Math.min(95, failProb + 25); simAnomCount++; }
+
+  const health = Math.max(5, 100 - failProb);
+  const isFail = failProb > 60;
+  if(isFail) simFailCount++;
+
+  // Update sensors
+  document.getElementById('s-airtemp').textContent = airTemp.toFixed(1);
+  document.getElementById('s-proctemp').textContent = procTemp.toFixed(1);
+  document.getElementById('s-speed').textContent = Math.round(speed);
+  document.getElementById('s-torque').textContent = torque.toFixed(1);
+  document.getElementById('s-wear').textContent = Math.round(wear);
+  document.getElementById('s-failprob').textContent = failProb.toFixed(1);
+
+  // Health bar
+  const hFill = document.getElementById('health-fill');
+  const hPct = document.getElementById('health-pct');
+  hFill.style.width = health + '%';
+  hPct.textContent = Math.round(health) + '%';
+  hFill.className = 'health-bar-fill' + (health < 30 ? ' crit' : health < 60 ? ' warn' : '');
+  hPct.style.color = health < 30 ? 'var(--danger)' : health < 60 ? 'var(--warn)' : 'var(--accent2)';
+
+  // Prediction display
+  const predEl = document.getElementById('sim-prediction');
+  if(isAnomaly) {
+    predEl.textContent = `⚠ ANOMALY DETECTED — Unusual sensor pattern at tick ${simTick}. Failure probability: ${failProb.toFixed(1)}%`;
+    predEl.style.color = 'var(--danger)';
+  } else if(isFail) {
+    predEl.textContent = `🔴 HIGH FAILURE RISK — Tool wear: ${Math.round(wear)} min · Prob: ${failProb.toFixed(1)}% · Recommend immediate inspection`;
+    predEl.style.color = 'var(--danger)';
+  } else if(failProb > 30) {
+    predEl.textContent = `🟡 ELEVATED RISK — Monitor closely · Failure probability: ${failProb.toFixed(1)}% · Tool wear: ${Math.round(wear)} min`;
+    predEl.style.color = 'var(--warn)';
+  } else {
+    predEl.textContent = `✅ MACHINE HEALTHY — Failure probability: ${failProb.toFixed(1)}% · All sensors nominal · Tick: ${simTick}`;
+    predEl.style.color = 'var(--accent2)';
+  }
+
+  // Update counters
+  document.getElementById('sim-tick').textContent = simTick;
+  document.getElementById('sim-fail-count').textContent = simFailCount;
+  document.getElementById('sim-anom-count').textContent = simAnomCount;
+
+  // Live chart
+  const maxPoints = 50;
+  if(liveLabels.length >= maxPoints){ liveLabels.shift(); liveSpeedData.shift(); liveTorqueData.shift(); liveProbData.shift(); }
+  liveLabels.push(simTick);
+  liveSpeedData.push((speed/100).toFixed(1));
+  liveTorqueData.push(torque.toFixed(1));
+  liveProbData.push(failProb.toFixed(1));
+  if(liveChart){ liveChart.update(); liveProbChart.update(); }
+}
+</script>
+</body>
+</html>
