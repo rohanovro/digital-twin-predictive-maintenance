@@ -1,4 +1,4 @@
-<div align="center">
+s<div align="center">
 
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&pause=1000&color=2EC4B6&center=true&vCenter=true&width=800&lines=AI-Driven+Digital+Twin;Predictive+Maintenance+%7C+Smart+Manufacturing;Industry+4.0+%7C+IEEE+Research+Project" alt="Typing SVG" />
 
@@ -198,19 +198,70 @@ Temp Gradient      █████████              9.9%   ← Novel the
 
 ## 📈 Figures
 
-All 9 figures are in `results/figures/` — warm teal/coral/gold palette, publication-ready at 150 DPI.
+All 9 figures — warm teal/coral/gold palette, publication-ready at 150 DPI.
 
-| # | Filename | Content |
-|---|---------|---------|
-| 01 | `01_dataset_overview.png` | Sensor histograms split by failure/normal + failure mode pie + correlation heatmap |
-| 02 | `02_model_comparison.png` | All-model metric bars + ROC curves + CV F1 with error bars |
-| 03 | `03_confusion_matrices.png` | All 4 models side-by-side confusion matrices |
-| 04 | `04_pr_roc_curves.png` | Precision-Recall + ROC curves overlaid for all models |
-| 05 | `05_xai_feature_importance.png` | RF + GBT importance bars + failure driver category donut |
-| 06 | `06_smote_impact.png` | Before/after SMOTE comparison for recall, F1, precision |
-| 07 | `07_anomaly_detection.png` | Score distribution + speed-torque scatter + overlap matrix |
-| 08 | `08_rul_prediction.png` | Failure probability vs wear curve + RUL estimate curve |
-| 09 | `09_research_summary_dashboard.png` | All KPIs + all key charts in one publication figure |
+---
+
+### 01 — Dataset Overview
+> Sensor distributions split by failure/normal · Failure mode pie · Correlation heatmap
+
+![Dataset Overview](results/figures/01_dataset_overview.png)
+
+---
+
+### 02 — Model Comparison
+> All-model metric bars · ROC curves · 5-Fold CV F1 with error bars
+
+![Model Comparison](results/figures/02_model_comparison.png)
+
+---
+
+### 03 — Confusion Matrices (All 4 Models)
+> Side-by-side: Random Forest · Gradient Boosting · Logistic Regression · Ensemble
+
+![Confusion Matrices](results/figures/03_confusion_matrices.png)
+
+---
+
+### 04 — Precision-Recall & ROC Curves
+> All models overlaid · Baseline comparison · Critical for imbalanced datasets
+
+![PR ROC Curves](results/figures/04_pr_roc_curves.png)
+
+---
+
+### 05 — Explainable AI — Feature Importance
+> RF + GBT ranked importance bars · Failure driver category donut chart
+
+![XAI Feature Importance](results/figures/05_xai_feature_importance.png)
+
+---
+
+### 06 — SMOTE Impact
+> Before vs After SMOTE: Recall +10pp · F1 improvement · Precision trade-off
+
+![SMOTE Impact](results/figures/06_smote_impact.png)
+
+---
+
+### 07 — Anomaly Detection
+> Score distribution · Speed-Torque anomaly scatter · Overlap with actual failures
+
+![Anomaly Detection](results/figures/07_anomaly_detection.png)
+
+---
+
+### 08 — Remaining Useful Life (RUL)
+> Failure probability vs tool wear · RUL estimate curve · Maintenance trigger zone
+
+![RUL Prediction](results/figures/08_rul_prediction.png)
+
+---
+
+### 09 — Research Summary Dashboard
+> All KPIs + all key charts in one publication-ready figure
+
+![Research Summary Dashboard](results/figures/09_research_summary_dashboard.png)
 
 ---
 
