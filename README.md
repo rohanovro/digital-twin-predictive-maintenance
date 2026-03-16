@@ -20,17 +20,17 @@
 
 | Metric | Result |
 |--------|--------|
-| 🎯 ROC-AUC | **0.979** |
-| ✅ Accuracy | **99.1%** |
-| 🔁 Recall (post-SMOTE) | **85.3%** |
-| 🤝 Ensemble F1 | **0.868** |
-| 🔍 Anomalies Detected | **52 / 2000** |
+|  ROC-AUC | **0.979** |
+|  Accuracy | **99.1%** |
+|  Recall (post-SMOTE) | **85.3%** |
+|  Ensemble F1 | **0.868** |
+|  Anomalies Detected | **52 / 2000** |
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 - [Overview](#-overview)
 - [Architecture](#-architecture)
@@ -45,7 +45,7 @@
 
 ---
 
-## 🌟 Overview
+##  Overview
 
 A **full-stack, research-grade AI Digital Twin** for predictive maintenance of industrial CNC machinery, implementing a novel **dual-layer detection system** that combines supervised machine learning with unsupervised anomaly detection — all wrapped in a live real-time simulation environment.
 
@@ -65,7 +65,7 @@ A **full-stack, research-grade AI Digital Twin** for predictive maintenance of i
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
@@ -101,7 +101,7 @@ A **full-stack, research-grade AI Digital Twin** for predictive maintenance of i
 
 ---
 
-## 📊 Dataset & Features
+##  Dataset & Features
 
 ### AI4I 2020 Predictive Maintenance Dataset
 
@@ -126,7 +126,7 @@ df["wear_speed_torque"]  = tool_wear * speed * torque       # High-order fatigue
 
 ---
 
-## 🎯 Results
+##  Results
 
 ### Model Comparison
 
@@ -135,7 +135,7 @@ df["wear_speed_torque"]  = tool_wear * speed * torque       # High-order fatigue
 | **Random Forest** | 99.05% | 86.6% | **85.3%** | 0.859 | 0.978 | 0.993 |
 | **Gradient Boost** | 99.20% | **96.4%** | 79.4% | 0.871 | 0.973 | 0.996 |
 | Logistic Reg | 86.15% | 17.9% | 85.3% | 0.295 | 0.934 | 0.843 |
-| **Ensemble (RF+GBT)** ⭐ | 99.15% | 91.8% | 82.4% | **0.868** | **0.979** | **0.996** |
+| **Ensemble (RF+GBT)**  | 99.15% | 91.8% | 82.4% | **0.868** | **0.979** | **0.996** |
 
 ### Feature Importance (Top 6)
 
@@ -145,14 +145,14 @@ Power (Spd×Tq)    ███████████████████   1
 Torque             ██████████████████    17.8%   ← Direct overstrain
 Tool Wear          ████████████          11.4%   ← Wear accumulation
 Wear × Torque      ██████████            10.3%   ← Non-linear wear under load
-Temp Gradient      █████████              9.9%   ← Novel thermal finding ★
+Temp Gradient      █████████              9.9%   ← Novel thermal finding 
 ```
 
 ---
 
 
 
-## 📈 Figures
+##  Figures
 
 ---
 
@@ -200,15 +200,15 @@ Temp Gradient      █████████              9.9%   ← Novel the
 ![Research Summary Dashboard](09_research_summary_dashboard.png)
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 digital-twin-predictive-maintenance/
 │
-├── 📂 data/
+├──  data/
 │   └── ai4i2020.csv                    # AI4I 2020 dataset (UCI ML Repo)
 │
-├── 📂 src/
+├──  src/
 │   ├── config.py                       # Central config: paths, palette, hyperparams
 │   ├── utils.py                        # Data loading, feature engineering, evaluation
 │   ├── train.py                        # Full training pipeline (SMOTE + 4 models + anomaly + RUL)
@@ -216,7 +216,7 @@ digital-twin-predictive-maintenance/
 │   ├── simulate.py                     # Real-time Digital Twin simulation
 │   └── predict.py                      # Single-sample inference + batch mode
 │
-├── 📂 models/
+├──  models/
 │   ├── random_forest.pkl               # Trained RF (joblib)
 │   ├── gradient_boost.pkl              # Trained GBT
 │   ├── logistic_reg.pkl                # Trained LR
@@ -224,16 +224,16 @@ digital-twin-predictive-maintenance/
 │   ├── isolation_forest.pkl            # Trained IF anomaly detector
 │   └── scaler.pkl                      # Fitted StandardScaler
 │
-├── 📂 results/
+├──  results/
 │   ├── metrics.json                    # All model metrics (JSON)
 │   ├── rul_estimates.csv               # RUL across wear levels
 │   ├── anomaly_results.json            # Isolation Forest output
-│   └── 📂 figures/                     # All 9 research figures (150 DPI)
+│   └──  figures/                     # All 9 research figures (150 DPI)
 │
-├── 📂 dashboard/
+├──  dashboard/
 │   └── digital_twin_dashboard.html     # Interactive browser dashboard
 │
-├── 📂 docs/
+├──  docs/
 │   └── paper_outline.md                # Full IEEE paper structure + results tables
 │
 ├── requirements.txt
@@ -243,56 +243,9 @@ digital-twin-predictive-maintenance/
 
 ---
 
-##  Quick Start
 
-### 1. Clone & Install
 
-```bash
-git clone https://github.com/rohanovro/digital-twin-predictive-maintenance.git
-cd digital-twin-predictive-maintenance
-pip install -r requirements.txt
-```
-
-### 2. Train the Pipeline
-
-```bash
-python src/train.py
-```
-
-### 3. Generate All Figures
-
-```bash
-python src/visualise.py
-```
-
-### 4. Run Real-Time Simulation
-
-```bash
-python src/simulate.py --ticks 100 --interval 0.3
-
-# Stress scenarios
-python src/simulate.py --scenario overheat
-python src/simulate.py --scenario overload
-```
-
-### 5. Single Prediction
-
-```bash
-python src/predict.py --air_temp 302.5 --proc_temp 314 --speed 1400 --torque 58 --wear 185
-
-# Interactive mode
-python src/predict.py --interactive
-```
-
-### 6. Open Dashboard
-
-```bash
-open dashboard/digital_twin_dashboard.html
-```
-
----
-
-## 🔬 Methodology
+##  Methodology
 
 ### Dual-Layer Detection System
 
@@ -316,9 +269,9 @@ RUL(t) = (1 − P_failure(t)) × (Max_wear − Current_wear(t))
 | Level | Threshold | Action |
 |-------|----------|--------|
 |  OK | P < 30% | Continue |
-| ⚠️ WARNING | 30–60% | Increase monitoring |
-| 🔴 HIGH RISK | 60–80% | Schedule maintenance |
-| 🚨 CRITICAL | > 80% | Immediate shutdown |
+|  WARNING | 30–60% | Increase monitoring |
+|  HIGH RISK | 60–80% | Schedule maintenance |
+|  CRITICAL | > 80% | Immediate shutdown |
 
 ---
 
