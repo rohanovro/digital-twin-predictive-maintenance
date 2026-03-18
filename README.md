@@ -285,6 +285,5 @@ RUL(t) = (1 − P_failure(t)) × (Max_wear − Current_wear(t))
 6. **Open-source, reproducible** — single command reproduces all results
 
 
-*If this project helped you, please ⭐ star the repo!*
 
 </div>
