@@ -182,63 +182,63 @@ All figures are publication-ready at 150 DPI using a consistent warm teal/coral/
 ### Figure 01 — Dataset Overview
 > Sensor distributions split by failure/normal · Failure mode pie · Correlation heatmap
 
-![Dataset Overview](results/figures/01_dataset_overview.png)
+![Dataset Overview](01_dataset_overview.png)
 
 ---
 
 ### Figure 02 — Model Comparison
 > All-model metric bars · ROC curves · 5-Fold CV F1 with error bars
 
-![Model Comparison](results/figures/02_model_comparison.png)
+![Model Comparison](02_model_comparison.png)
 
 ---
 
 ### Figure 03 — Confusion Matrices
 > Side-by-side: Random Forest · Gradient Boosting · Logistic Regression · Ensemble
 
-![Confusion Matrices](results/figures/03_confusion_matrices.png)
+![Confusion Matrices](03_confusion_matrices.png)
 
 ---
 
 ### Figure 04 — Precision-Recall & ROC Curves
 > All models overlaid · Baseline comparison · Critical for imbalanced datasets
 
-![PR ROC Curves](results/figures/04_pr_roc_curves.png)
+![PR ROC Curves](04_pr_roc_curves.png)
 
 ---
 
 ### Figure 05 — Explainable AI — Feature Importance
 > RF + GBT ranked importance bars · Failure driver category donut chart
 
-![XAI Feature Importance](results/figures/05_xai_feature_importance.png)
+![XAI Feature Importance](05_xai_feature_importance.png)
 
 ---
 
 ### Figure 06 — SMOTE Impact
 > Before vs After SMOTE: Recall +10pp · F1 improvement · Precision trade-off
 
-![SMOTE Impact](results/figures/06_smote_impact.png)
+![SMOTE Impact](06_smote_impact.png)
 
 ---
 
 ### Figure 07 — Anomaly Detection
 > Score distribution · Speed-Torque anomaly scatter · Overlap with actual failures
 
-![Anomaly Detection](results/figures/07_anomaly_detection.png)
+![Anomaly Detection](07_anomaly_detection.png)
 
 ---
 
 ### Figure 08 — Remaining Useful Life (RUL)
 > Failure probability vs tool wear · RUL estimate curve · Maintenance trigger zone
 
-![RUL Prediction](results/figures/08_rul_prediction.png)
+![RUL Prediction](08_rul_prediction.png)
 
 ---
 
 ### Figure 09 — Research Summary Dashboard
 > All KPIs + all key charts in one publication-ready figure
 
-![Research Summary Dashboard](results/figures/09_research_summary_dashboard.png)
+![Research Summary Dashboard](09_research_summary_dashboard.png)
 
 ---
 
@@ -425,11 +425,12 @@ Being explicit about limitations is part of honest research practice.
 
 ## 📝 Research Status
 
+This work is currently being prepared for submission to an IEEE conference in the area of AI-driven predictive maintenance and digital twin systems for Industry 4.0 applications.
 
 **Author:** Mahmudul Hasan Rohan  
 **Institution:** Jashore University of Science and Technology, Bangladesh  
 **Repository:** https://github.com/rohanovro/digital-twin-predictive-maintenance  
-**Year:** 2026
+**Year:** 2025
 
 If you use this work, please cite the repository until a formal publication is available.
 
